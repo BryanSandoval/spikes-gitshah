@@ -1,0 +1,62 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<objects xmlns="http://www.springframework.net"
+         xmlns:db="http://www.springframework.net/database"
+         xmlns:tx="http://www.springframework.net/tx">
+
+  <object type="aspnetwebFormsWithMvc3App.Controllers.HomeController, aspnetwebFormsWithMvc3App" singleton="false" id="Home">
+    <property name="AccountService" ref="AccountService"/>
+    <property name="UserContext" ref="UserContext"/>
+  </object>
+  <object type="aspnetwebFormsWithMvc3App.Controllers.LoginController, aspnetwebFormsWithMvc3App" singleton="false" id="Login">
+    <property name="UserContext" ref="UserContext"/>
+  </object>
+  <object type="aspnetwebFormsWithMvc3App.Controllers.AccountController, aspnetwebFormsWithMvc3App" singleton="false" id="Account">
+  </object>
+  <object type="aspnetwebFormsWithMvc3App.Service.AccountService, aspnetwebFormsWithMvc3App" id="AccountService">
+    <property name="SessionFactory" ref="SessionFactory"/>
+  </object>
+
+  <object type="aspnetwebFormsWithMvc3App.Context.UserContext, aspnetwebFormsWithMvc3App" id="UserContext" scope="session">
+  </object>
+
+  <!-- Default Database Configuration -->
+  <db:provider id="DbProvider"
+                   provider="System.Data.SqlClient"
+                   connectionString="Data Source=localhost;Database=v1012;User ID=SqlConnect;Password=Pench2006;"/>
+
+  <object id="SessionFactory" type="aspnetwebFormsWithMvc3App.NHibernate.FluentNhibernateLocalSessionFactoryObject, aspnetwebFormsWithMvc3App">
+    <property name="DbProvider" ref="DbProvider"/>
+    <property name="FluentNhibernateMappingAssemblies">
+      <list>
+        <value>aspnetwebFormsWithMvc3App</value>
+      </list>
+    </property>
+    <property name="MappingAssemblies">
+      <list>
+        <value>aspnetwebFormsWithMvc3App</value>
+      </list>
+    </property>
+    <property name="HibernateProperties">
+      <dictionary>
+        <entry key="hibernate.connection.provider" value="NHibernate.Connection.DriverConnectionProvider"/>
+        <entry key="dialect" value="NHibernate.Dialect.MsSql2005Dialect"/>
+        <entry key="connection.driver_class" value="NHibernate.Driver.SqlClientDriver"/>
+        <entry key="show_sql" value="false" />
+      </dictionary>
+    </property>
+
+    <!-- provides integation with Spring's declarative transaction management features -->
+    <property name="ExposeTransactionAwareSessionFactory" value="true" />
+  </object>
+
+  <!-- Transaction Management Strategy - local database transactions -->
+  <object id="transactionManager"
+        type="Spring.Data.NHibernate.HibernateTransactionManager, Spring.Data.NHibernate30">
+
+    <property name="DbProvider" ref="DbProvider"/>
+    <property name="SessionFactory" ref="SessionFactory"/>
+
+  </object>
+  
+  <tx:attribute-driven/>
+</objects>
